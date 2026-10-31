@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{194D9842-7070-4F95-9EAF-610447A6C708}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyperdrive.API", "src\Hyperdrive.API\Hyperdrive.API.csproj", "{7FCBB1C7-AF36-44E1-AB34-5035B6F1379D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyperdrive", "src\Hyperdrive\Hyperdrive.csproj", "{341783B7-61B2-41A4-A7FE-F774DFB260A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7FCBB1C7-AF36-44E1-AB34-5035B6F1379D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FCBB1C7-AF36-44E1-AB34-5035B6F1379D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FCBB1C7-AF36-44E1-AB34-5035B6F1379D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FCBB1C7-AF36-44E1-AB34-5035B6F1379D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{341783B7-61B2-41A4-A7FE-F774DFB260A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{341783B7-61B2-41A4-A7FE-F774DFB260A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{341783B7-61B2-41A4-A7FE-F774DFB260A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{341783B7-61B2-41A4-A7FE-F774DFB260A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7FCBB1C7-AF36-44E1-AB34-5035B6F1379D} = {194D9842-7070-4F95-9EAF-610447A6C708}
+		{341783B7-61B2-41A4-A7FE-F774DFB260A0} = {194D9842-7070-4F95-9EAF-610447A6C708}
+	EndGlobalSection
+EndGlobal

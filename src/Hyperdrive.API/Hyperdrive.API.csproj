@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Stable public contract for other mods (GroundBlastFX, Volumetric Explosion FX...).
+    Keep it tiny and dependency-free: no Harmony, no references to Hyperdrive internals.
+  -->
+  <PropertyGroup>
+    <AssemblyName>Hyperdrive.API</AssemblyName>
+    <RootNamespace>Hyperdrive.API</RootNamespace>
+  </PropertyGroup>
+</Project>

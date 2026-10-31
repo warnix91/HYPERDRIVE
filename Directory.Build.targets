@@ -1,0 +1,27 @@
+<Project>
+  <Target Name="HyperdriveCheckEnvironment" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(KSPRoot)' == ''"
+           Text="KSPRoot is not set. Copy KSP.props.user.example to KSP.props.user and set your KSP install path (or set the KSP_ROOT environment variable)." />
+    <Error Condition="!Exists('$(KSPManaged)/Assembly-CSharp.dll')"
+           Text="Assembly-CSharp.dll not found in '$(KSPManaged)'. Check KSPRoot in KSP.props.user." />
+    <Error Condition="'$(UsesHarmony)' == 'true' and !Exists('$(HarmonyDll)')"
+           Text="0Harmony.dll not found at '$(HarmonyDll)'. Install HarmonyKSP (GameData/000_Harmony) in your KSP install." />
+  </Target>
+
+  <!-- Copy the built DLL into the repo's GameData/Hyperdrive/Plugins folder. -->
+  <Target Name="HyperdriveCopyToModFolder" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModGameData)Plugins" SkipUnchangedFiles="true" />
+    <Copy Condition="Exists('$(TargetDir)$(TargetName).pdb')" SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModGameData)Plugins" SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- The main project then mirrors the whole mod folder into the local KSP install. -->
+  <Target Name="HyperdriveDeployToKSP" AfterTargets="HyperdriveCopyToModFolder" Condition="'$(HyperdriveDeploysMod)' == 'true' and '$(DeployToKSP)' == 'true'">
+    <ItemGroup>
+      <_HyperdriveModFiles Include="$(ModGameData)**/*" Exclude="$(ModGameData)PluginData/**" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_HyperdriveModFiles)"
+          DestinationFiles="@(_HyperdriveModFiles->'$(KSPRoot)/GameData/Hyperdrive/%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+    <Message Importance="high" Text="Hyperdrive deployed to $(KSPRoot)/GameData/Hyperdrive" />
+  </Target>
+</Project>

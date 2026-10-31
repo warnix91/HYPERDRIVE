@@ -1,0 +1,11 @@
+# Hyperdrive regression baseline (tools/regress): known exceptions per run, heavy craft temperatures at 10 s.
+# Written by --update on a build known to be good. Lines: exception<TAB>run<TAB>signature | thermal<TAB>run<TAB>values
+exception	crash	InvalidOperationException: Steamworks is not initialized. @ at Steamworks.InteropHelp.TestIfAvailableClient () in :#
+exception	crash	NullReferenceException @ at (wrapper managed-to-native) UnityEngine.Component.GetComponentFastPath(UnityEngine.Component,System.Type,intptr)
+exception	cycles	InvalidOperationException: Steamworks is not initialized. @ at Steamworks.InteropHelp.TestIfAvailableClient () in :#
+exception	editor	InvalidOperationException: Steamworks is not initialized. @ at Steamworks.InteropHelp.TestIfAvailableClient () in :#
+exception	load	InvalidOperationException: Steamworks is not initialized. @ at Steamworks.InteropHelp.TestIfAvailableClient () in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at PhysicsGlobals.get_ThermalColorsDebug () in :#
+thermal	load	304.240 305.100 304.237 304.936
+thermal	cycles	304.240 305.120 304.243 304.953
+thermal	crash	304.240 305.100 304.236 304.935

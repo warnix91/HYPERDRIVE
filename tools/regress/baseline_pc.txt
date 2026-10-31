@@ -1,0 +1,60 @@
+# Hyperdrive regression baseline (tools/regress): known exceptions per run, heavy craft temperatures at 10 s.
+# Written by --update on a build known to be good. Lines: exception<TAB>run<TAB>signature | thermal<TAB>run<TAB>values[<TAB>tolerance K]
+exception	crash	ArgumentException: Invalid path @ at System.IO.Path.GetDirectoryName (System.String path) in :#
+exception	crash	FileNotFoundException: Could not load file or assembly '*' or one of its dependencies. @ (no stack)
+exception	crash	NullReferenceException @ at (wrapper managed-to-native) UnityEngine.Light.RemoveCommandBuffer(UnityEngine.Light,UnityEngine.Rendering.LightEvent,UnityEngine.Rendering.CommandBuffer)
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at Astrogator.Settings.Save () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at FMRS.FMRS_Core.detach_handlers () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at FMRS.FMRS_Space_Center.ReloadSettings () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at FirstPerson.EVABoundFix..ctor (KerbalEVA eva) in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at FlightGlobals.get_ActiveVessel () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at JSI.RasterPropMonitor.OnDestroy () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at KSP.UI.UIMasterController.AnyCornerOffScreen (UnityEngine.RectTransform rect) in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at Kopernicus.RuntimeUtility.RuntimeUtility.UpdateConfig () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at Parallax.Scaled_System.RaymarchedShadowsRenderer.DebugShadowComponent () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at Parallax.Scaled_System.ScaledManager.OnDisable () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at Restock.ModuleRestockDeployableMeshHider.OnDestroy () in :#
+exception	crash	NullReferenceException: Object reference not set to an instance of an object @ at StarshipExpansionProject.ModuleSEPControlSurface.OnDestroy () in :#
+exception	crash	System.ArithmeticException: Function does not accept floating point Not-a-Number values. @ at System.Math.Sign (System.Double value) in :#
+exception	crash	System.NullReferenceException @ at (wrapper managed-to-native) UnityEngine.GameObject.GetComponentInChildren(UnityEngine.GameObject,System.Type,bool)
+exception	cycles	ArgumentException: Invalid path @ at System.IO.Path.GetDirectoryName (System.String path) in :#
+exception	cycles	FileNotFoundException: Could not load file or assembly '*' or one of its dependencies. @ (no stack)
+exception	cycles	NullReferenceException @ at (wrapper managed-to-native) UnityEngine.Component.get_gameObject(UnityEngine.Component)
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at Astrogator.Settings.Save () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at FMRS.FMRS_Core.detach_handlers () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at FirstPerson.EVABoundFix..ctor (KerbalEVA eva) in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at HighLogic.get_UISkin () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at JSI.RasterPropMonitor.OnDestroy () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at Kopernicus.RuntimeUtility.RuntimeUtility.UpdateConfig () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at Parallax.Scaled_System.RaymarchedShadowsRenderer.DebugShadowComponent () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at Parallax.Scaled_System.ScaledManager.OnDisable () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at PhysicsGlobals.set_AeroForceDisplayScale (System.Single value) in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at Restock.ModuleRestockDeployableMeshHider.OnDestroy () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at Scatterer.MainSettingsReadWrite.saveMainSettingsIfChanged () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at StarshipExpansionProject.ModuleSEPControlSurface.OnDestroy () in :#
+exception	editor	ArgumentException: Invalid path @ at System.IO.Path.GetDirectoryName (System.String path) in :#
+exception	editor	IOException: Win# IO returned #. Path: @ at (wrapper dynamic-method) ConfigNode.ConfigNode.Save_Patch#(ConfigNode,string,string)
+exception	editor	NullReferenceException @ at (wrapper managed-to-native) UnityEngine.Light.RemoveCommandBuffer(UnityEngine.Light,UnityEngine.Rendering.LightEvent,UnityEngine.Rendering.CommandBuffer)
+exception	editor	NullReferenceException: Object reference not set to an instance of an object @ at FMRS.FMRS_Space_Center.ReloadSettings () in :#
+exception	editor	NullReferenceException: Object reference not set to an instance of an object @ at JSI.RasterPropMonitor.OnDestroy () in :#
+exception	editor	NullReferenceException: Object reference not set to an instance of an object @ at KSP.UI.UIMasterController.AnyCornerOffScreen (UnityEngine.RectTransform rect) in :#
+exception	editor	NullReferenceException: Object reference not set to an instance of an object @ at PQS.SetVisible (System.Boolean visible) in :#
+exception	load	ArgumentException: Invalid path @ at System.IO.Path.GetDirectoryName (System.String path) in :#
+exception	load	FileNotFoundException: Could not load file or assembly '*' or one of its dependencies. @ (no stack)
+exception	load	NullReferenceException @ at (wrapper managed-to-native) UnityEngine.Component.get_transform(UnityEngine.Component)
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at FMRS.FMRS_Space_Center.ReloadSettings () in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at FirstPerson.EVABoundFix..ctor (KerbalEVA eva) in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at FlightGlobals.get_ActiveVessel () in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at JSI.RasterPropMonitor.OnDestroy () in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at KSP.UI.UIMasterController.AnyCornerOffScreen (UnityEngine.RectTransform rect) in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at Kopernicus.RuntimeUtility.RuntimeUtility.UpdateConfig () in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at PhysicsGlobals.get_AeroFXDensityFadeStart () in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at Restock.ModuleRestockDeployableMeshHider.OnDestroy () in :#
+exception	load	NullReferenceException: Object reference not set to an instance of an object @ at StarshipExpansionProject.ModuleSEPControlSurface.OnDestroy () in :#
+exception	load	System.NullReferenceException @ at (wrapper managed-to-native) UnityEngine.GameObject.GetComponentInChildren(UnityEngine.GameObject,System.Type,bool)
+exception	load	System.NullReferenceException: Object reference not set to an instance of an object @ at ModuleDeployablePart.AssumeDragCubePosition (System.String name) in :#
+thermal	load	304.110 304.900 304.101 304.802
+thermal	cycles	304.110 304.980 304.106 304.814	0.2
+thermal	crash	304.110 304.910 304.101 304.803
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at SpaceCenterCamera#.UpdateTransformOverview () in :#
+exception	cycles	NullReferenceException: Object reference not set to an instance of an object @ at SpaceCenterCamera#.OnSceneSwitch (GameScenes scene) in :#

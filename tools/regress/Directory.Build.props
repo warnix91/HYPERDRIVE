@@ -1,0 +1,3 @@
+<Project>
+  <!-- Stops the repository-wide props (KSP references) from reaching the regression checker, a plain .NET tool. -->
+</Project>

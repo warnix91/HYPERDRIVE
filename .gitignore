@@ -1,0 +1,37 @@
+# Build output
+bin/
+obj/
+*.user
+!KSP.props.user.example
+KSP.props.user
+
+# Built plugins (produced by the build, never committed)
+GameData/Hyperdrive/Plugins/*.dll
+GameData/Hyperdrive/Plugins/*.pdb
+
+# Runtime data written by the mod in game (caches, user overrides, reports)
+GameData/Hyperdrive/PluginData/
+
+# Local reference material: decompiled KSP code must NEVER be committed
+_reference/
+graphify-out/
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Unity shader project (M3)
+unity/**/Library/
+unity/**/Temp/
+unity/**/Logs/
+unity/**/obj/
+unity/**/UserSettings/
+
+# AutoBench output (tools/bench.ps1 / bench.sh)
+/bench/
+unity/**/Build/
+dist/

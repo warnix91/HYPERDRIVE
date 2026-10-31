@@ -1,0 +1,8 @@
+{
+  "NAME": "Hyperdrive",
+  "URL": "https://raw.githubusercontent.com/warnix91/HYPERDRIVE/main/GameData/Hyperdrive/Hyperdrive.version",
+  "DOWNLOAD": "https://github.com/warnix91/HYPERDRIVE/releases",
+  "VERSION": {"MAJOR": 1, "MINOR": 0, "PATCH": 0, "BUILD": 0},
+  "KSP_VERSION_MIN": { "MAJOR": 1, "MINOR": 12, "PATCH": 0 },
+  "KSP_VERSION_MAX": { "MAJOR": 1, "MINOR": 12, "PATCH": 5 }
+}

@@ -1,0 +1,13 @@
+<!--
+  Copy this file to KSP.props.user (gitignored) and set the path of YOUR KSP 1.12.5 install.
+  Mac (Steam):     /Users/<you>/Library/Application Support/Steam/steamapps/common/Kerbal Space Program
+  Windows (Steam): C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program
+  Linux (Steam):   /home/<you>/.local/share/Steam/steamapps/common/Kerbal Space Program
+  Set DeployToKSP to false to build without copying the mod into the game.
+-->
+<Project>
+  <PropertyGroup>
+    <KSPRoot>C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program</KSPRoot>
+    <DeployToKSP>true</DeployToKSP>
+  </PropertyGroup>
+</Project>
