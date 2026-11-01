@@ -184,6 +184,7 @@ namespace Hyperdrive.Rendering
         private float _introWorst, _introSpan;
         private bool _introReported;
         private bool _introRolling;
+        private float _focusSince = -1f;   // when the game's window last got the focus (-1: not focused)
         private float _speed, _warp, _overlay = 1f, _flash, _exitSpeed, _approachWarp;
         private float _drawSpeed, _drawWarp, _starDim = 1f, _sunUp;   // what the current style makes of speed and warp
         private Style _style;
@@ -644,10 +645,26 @@ namespace Hyperdrive.Rendering
                     }
                 }
                 // A key only once the titles show: a click on the black before them (focusing the game's window) skipped
-                // the whole intro.
-                if (_introClock < RevealStart && ((_introRolling && _introClock > 0.5f && Input.anyKeyDown) || Loading.PngCachePrompt.Shown))
+                // the whole intro. Nor the click that brings the window back to the front: input counts once the window
+                // has had the focus for half a second.
+                if (!Application.isFocused)
+                    _focusSince = -1f;
+                else if (_focusSince < 0f)
+                    _focusSince = now;
+                if (_introClock < RevealStart && _introRolling && _introClock > 0.5f && Input.anyKeyDown)
                 {
-                    _introClock = RevealStart;   // also when the PNG cache question comes up: the titles give way to it
+                    string what = Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2) ? "a click" : "a key";
+                    if (now - _focusSince > 0.5f)
+                    {
+                        Log.Info("WarpScreen: intro skipped by " + what + " at " + _introClock.ToString("F1") + " s of the titles");
+                        _introClock = RevealStart;
+                    }
+                    else
+                        Log.Info("WarpScreen: " + what + " as the window got the focus, intro not skipped");
+                }
+                if (_introClock < RevealStart && Loading.PngCachePrompt.Shown)
+                {
+                    _introClock = RevealStart;   // the titles give way to the PNG cache question
                     _introRolling = true;
                 }
                 if (_phase == Phase.Ignition && _introClock < RevealStart)
