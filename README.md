@@ -30,7 +30,7 @@ With KSPCommunityFixes, Hyperdrive leaves to KSPCF what it already does and adds
 menu on the base game, 82 s instead of 96 s with ~135 mods.
 
 ## Measurements
-Measured on a PC (i5-14600KF, 32 GB, Windows 11) and a MacBook Air M4. Details in `docs/BENCHMARKS.md`.
+Measured on a PC (i5-14600KF, RX 9070 XT, 32 GB, Windows 11) and a MacBook Air M4. Details in `docs/BENCHMARKS.md`.
 
 ![Base game](docs/images/gallery/02_menu_base_en.png)
 ![Modded game](docs/images/gallery/03_menu_modded_en.png)
@@ -50,7 +50,7 @@ FAR, ModularFlightIntegrator and Principia, and was tested on a 295-mod RSS/RP-1
 Open an issue with `KSP.log` (in the game folder) and `Player.log`.
 
 ---
-<sub>Hyperdrive by Warnix. MIT licence (see `LICENSE`). Thanks to the KSP community, and to KSPCommunityFixes for
+<sub>Hyperdrive by Warnix, made with AI: every change is measured and tested before release. MIT licence (see `LICENSE`). Thanks to the KSP community, and to KSPCommunityFixes for
 several ideas.</sub>
 
 ## Building

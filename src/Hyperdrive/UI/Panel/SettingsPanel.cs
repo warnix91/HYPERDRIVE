@@ -239,6 +239,12 @@ namespace Hyperdrive.UI.Panel
             }
             catch(Exception) { return null; }
         }
+        // KSP's toolbar and the main menu: the mark alone on transparent, like the stock buttons; the tile if it is missing.
+        internal static Texture2D ToolbarIcon()
+        {
+            if(Hyperdrive.Core.Brand.IsApoapsis) return OrbitIcon(64);
+            return ArtIcon("toolbar_64.png") ?? Icon(64);
+        }
         internal static Texture2D Icon(int size)
         {
             if(Hyperdrive.Core.Brand.IsApoapsis) return OrbitIcon(size);

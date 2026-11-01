@@ -602,14 +602,18 @@ namespace Hyperdrive.Rendering
                 // click skips to the reveal; ignition starts as the loading screen comes out of the black.
                 // The load's first seconds can stall frame after frame (PC, big modpack: several 0.5-2 s frames, a few
                 // frames a second in between): the intro waits on black, as the game would show, until frames flow
-                // (half a second of frames under 70 ms), so it plays whole and smooth; 20 s at most.
+                // (half a second of frames under 70 ms), so it plays whole and smooth; 20 s at most. It also waits for the
+                // freezes remembered from the last start that would fall while it plays (measured, KSP DEV: two freezes of
+                // 0.3-1 s in the load's first percent, then none for 30 s): up to 35 s.
                 if (!_introRolling)
                 {
                     _introSmooth = rawDt < 0.07f ? _introSmooth + rawDt : 0f;
-                    if (_introSmooth >= 0.5f || now - _start > 20f)
+                    bool flowing = _introSmooth >= 0.5f || now - _start > 20f;
+                    if (flowing && (!FreezeDuringIntro() || now - _start > 35f))
                     {
                         _introRolling = true;
-                        Log.Info("WarpScreen: intro starts " + (now - _start).ToString("F1") + " s into the load (frames flowing)");
+                        Log.Info("WarpScreen: intro starts " + (now - _start).ToString("F1") + " s into the load at "
+                                 + (_progress * 100f).ToString("F1") + " % (frames flowing" + (_knownCount > 0 ? ", past the remembered freezes)" : ")"));
                     }
                 }
                 else
@@ -636,7 +640,9 @@ namespace Hyperdrive.Rendering
                                  + (_introWorst * 1000f).ToString("F0") + " ms, " + _introSlow + " frames over 50 ms)");
                     }
                 }
-                if (_introClock < RevealStart && (Input.anyKeyDown || Loading.PngCachePrompt.Shown))
+                // A key only once the titles show: a click on the black before them (focusing the game's window) skipped
+                // the whole intro.
+                if (_introClock < RevealStart && ((_introRolling && _introClock > 0.5f && Input.anyKeyDown) || Loading.PngCachePrompt.Shown))
                 {
                     _introClock = RevealStart;   // also when the PNG cache question comes up: the titles give way to it
                     _introRolling = true;
@@ -810,6 +816,16 @@ namespace Hyperdrive.Rendering
             _calming = calm;
             float target = calm ? CalmScale : 1f;
             _timeScale = Mathf.MoveTowards(_timeScale, target, dt * (calm ? 5f : 1.6f));
+        }
+
+        // A remembered freeze still ahead within the progress the titles would cover at the current pace (1-5 % of the load).
+        private bool FreezeDuringIntro()
+        {
+            float span = Mathf.Clamp(_progressRate * IntroHold, 0.01f, 0.05f);
+            for (int i = 0; i < _knownCount; i++)
+                if (_progress <= _known[i] + PassedMargin && _known[i] <= _progress + span)
+                    return true;
+            return false;
         }
 
         private static string FreezeFile => System.IO.Path.Combine(System.IO.Path.Combine(HyperdriveRuntime.ModDirectory, "PluginData"), "LoadingFreezes.txt");

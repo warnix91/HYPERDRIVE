@@ -36,7 +36,7 @@ namespace Hyperdrive.UI
         private static Texture2D s_icon;
 
         /// <summary>The mod's icon, for KSP's toolbar and the main menu.</summary>
-        internal static Texture2D Icon => s_icon != null ? s_icon : (s_icon = UiArt.Icon(64));
+        internal static Texture2D Icon => s_icon != null ? s_icon : (s_icon = UiArt.ToolbarIcon());
 
         protected internal override void LoadSettings(SettingsSection settings)
         {
@@ -130,10 +130,21 @@ namespace Hyperdrive.UI
             _logoContent.tooltip = _menuTip;
         }
 
-        internal bool IsOpen => _panel != null && _panel.Visible;
+        internal bool IsOpen => _panel != null && _panel.Root != null && _panel.Visible;
+
+        // The window's canvas belongs to the scene it was built in (the main menu, KSP's settings): a scene change destroys
+        // it, and the next click builds a new one.
+        private void DropIfGone()
+        {
+            if (_panel == null || _panel.Root != null)
+                return;
+            _panel = null;
+            Unlock();
+        }
 
         internal void Open(bool open, int page = -1)
         {
+            DropIfGone();
             if (page >= 0)
                 _page = page;
             if (open)
@@ -187,6 +198,7 @@ namespace Hyperdrive.UI
 
         private void Update()
         {
+            DropIfGone();
             CaptureSteps();
             if (Input.GetKeyDown(KeyCode.F10) && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)))
                 Open(!IsOpen);
@@ -221,7 +233,7 @@ namespace Hyperdrive.UI
             }
             catch (Exception e)
             {
-                Log.Warn("HyperdriveWindow: panel closed after an error (" + e.Message + ")");
+                Log.Warn("HyperdriveWindow: panel closed after an error (" + e.GetType().Name + ": " + e.Message + ")");
                 if (_panel != null) { _panel.ReleaseFocus(); _panel.Visible = false; }
                 Unlock();
             }
