@@ -287,9 +287,9 @@ namespace Hyperdrive.UI
         {
             if (HighLogic.LoadedScene != GameScenes.MAINMENU)
                 return;
-            // Main menu: the mod's icon at the top right, where KSP's toolbar sits in the other scenes.
+            // Main menu: the mod's icon at the top left, clear of the toolbar buttons other mods put at the top right.
             float size = Mathf.Clamp(Screen.height * 0.034f, 32f, 52f);
-            var r = new Rect(Screen.width - size - 14f, 14f, size, size);
+            var r = new Rect(14f, 14f, size, size);
             bool hover = r.Contains(Event.current.mousePosition);
             Color old = GUI.color;
             GUI.color = new Color(1f, 1f, 1f, hover || IsOpen ? 1f : 0.82f);
