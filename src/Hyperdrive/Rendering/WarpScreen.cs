@@ -220,7 +220,7 @@ namespace Hyperdrive.Rendering
         private Color32[] _colors;
         private readonly Vector3[] _quadVerts = new Vector3[4];
         private readonly Color32[] _quadColors = new Color32[4];
-        private Material _additive, _blend;
+        private Material _additive, _blend, _texture;
 
         // Text
         private GUIStyle _tipStyle, _labelStyle, _percentStyle, _markStyle;
@@ -314,6 +314,9 @@ namespace Hyperdrive.Rendering
             Shader shader = Shader.Find("Hidden/Internal-Colored");
             _additive = MakeMaterial(shader, UnityEngine.Rendering.BlendMode.One, UnityEngine.Rendering.BlendMode.One);
             _blend = MakeMaterial(shader, UnityEngine.Rendering.BlendMode.SrcAlpha, UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            Shader guiTexture = Shader.Find("Hidden/Internal-GUITexture");   // the GUI's own textured shader, always in the build
+            if (guiTexture != null)
+                _texture = new Material(guiTexture) { hideFlags = HideFlags.HideAndDontSave };
 
             FieldInfo tips = AccessTools.Field(typeof(LoadingScreen), "tipsText");
             _tipsComponent = tips != null ? tips.GetValue(screen) as Component : null;
@@ -1423,14 +1426,19 @@ namespace Hyperdrive.Rendering
                 var tex = new Texture2D(w, h, TextureFormat.RGBA32, true);
                 tex.ReadPixels(new Rect(0, 0, w, h), 0, 0, false);
                 Color32[] px = tex.GetPixels32();
-                // Art that already has a transparent background (the studio logo: white, its shape in alpha) is drawn as it
-                // is: brightness alone would turn it into a white square.
+                // Art that already has a transparent background (the studio logo: white, its shape in alpha) is kept as it
+                // is (brightness alone would turn it into a white square), in a mipmapped copy: drawn smaller than its
+                // size, its edges stay still as it grows.
                 int clearBorder = 0, borderCount = 0;
                 for (int x = 0; x < w; x += 4) { borderCount += 2; if (px[x].a < 16) clearBorder++; if (px[(h - 1) * w + x].a < 16) clearBorder++; }
                 if (clearBorder * 2 > borderCount)
                 {
-                    UnityEngine.Object.Destroy(tex);
-                    return null;
+                    tex.wrapMode = TextureWrapMode.Clamp;
+                    tex.filterMode = FilterMode.Trilinear;
+                    tex.anisoLevel = 4;
+                    tex.Apply(true, true);
+                    tex.name = "Hyperdrive.Intro." + src.name;
+                    return tex;
                 }
                 // Background: the border's pixels, brightest channel; a level just above most of them.
                 var border = new System.Collections.Generic.List<int>(2 * (w + h));
@@ -1478,13 +1486,33 @@ namespace Hyperdrive.Rendering
 
         private static int Max3(Color32 c) => Math.Max(c.r, Math.Max(c.g, c.b));
 
-        // Sub-pixel textured quad (GUI space): Graphics.DrawTexture places the rect exactly, where GUI.DrawTexture snaps it
-        // to whole pixels (a slow zoom made the logo's edges step and tremble). 0.5 is the neutral tint of its material.
-        private static void DrawSmooth(Rect r, Texture tex, Rect uv, float alpha)
+        private static string Describe(Texture2D t) => t == null ? "none" : t.name + " " + t.width + "x" + t.height + " (" + t.mipmapCount + " mips)";
+
+        // Sub-pixel textured quad (GUI space), drawn with GL: the GUI's texture calls, Graphics.DrawTexture included, round
+        // the rect to whole pixels, so the logos' slow push-ins moved by one-pixel steps. Same shader as theirs: 0.5 is its
+        // neutral tint.
+        private void DrawSmooth(Rect r, Texture tex, Rect uv, float alpha)
         {
             if (tex == null || alpha <= 0f)
                 return;
-            Graphics.DrawTexture(r, tex, uv, 0, 0, 0, 0, new Color(0.5f, 0.5f, 0.5f, 0.5f * Mathf.Clamp01(alpha)));
+            if (_texture == null)
+            {
+                Graphics.DrawTexture(r, tex, uv, 0, 0, 0, 0, new Color(0.5f, 0.5f, 0.5f, 0.5f * Mathf.Clamp01(alpha)));
+                return;
+            }
+            _texture.mainTexture = tex;
+            if (!_texture.SetPass(0))
+                return;
+            GL.PushMatrix();
+            GL.LoadPixelMatrix(0, Screen.width, Screen.height, 0);   // GUI orientation (y down)
+            GL.Begin(GL.QUADS);
+            GL.Color(new Color(0.5f, 0.5f, 0.5f, 0.5f * Mathf.Clamp01(alpha)));
+            GL.TexCoord2(uv.xMin, uv.yMax); GL.Vertex3(r.xMin, r.yMin, 0f);
+            GL.TexCoord2(uv.xMax, uv.yMax); GL.Vertex3(r.xMax, r.yMin, 0f);
+            GL.TexCoord2(uv.xMax, uv.yMin); GL.Vertex3(r.xMax, r.yMax, 0f);
+            GL.TexCoord2(uv.xMin, uv.yMin); GL.Vertex3(r.xMin, r.yMax, 0f);
+            GL.End();
+            GL.PopMatrix();
         }
 
         private static float Smoother(float x)
@@ -1547,6 +1575,8 @@ namespace Hyperdrive.Rendering
                     _cutDone = true;
                     _cutArt = CutOut(_posterArt, PosterCrop);
                     _cutLogo = CutOut(_posterLogo, new Rect(0f, 0f, 1f, 1f));
+                    Log.Info("WarpScreen: intro art " + Describe(_posterLogo) + " -> " + Describe(_cutLogo) + ", " + Describe(_posterArt)
+                             + " -> " + Describe(_cutArt) + (_texture != null ? ", sub-pixel quads" : ", GUI texture shader missing: Graphics.DrawTexture"));
                 }
                 EnsureStyles(h);
                 Color previous = GUI.color;
