@@ -18,6 +18,7 @@ namespace Hyperdrive.Rendering
         private float[] _seg;   // x0, y0, x1, y1 per segment, in drawing order
         private int _count;
         private float _total;
+        private string _height, _diameter;   // the dimensions, with the player's decimal separator (built once)
 
         public override string Name => "blueprint";
         public override Color Background => new Color(0.032f, 0.078f, 0.14f, 1f);
@@ -120,8 +121,13 @@ namespace Hyperdrive.Rendering
             float w = c.W, h = c.H, s = h * 0.70f, ox = w * 0.40f, oy = h * 0.14f;
             Color ink = new Color(0.82f, 0.93f, 1f, 0.8f);
             float size = h * 0.016f;
-            c.Label(ox + 0.27f * s, oy + 0.5f * s, "14,8 m", ink, size);
-            c.Label(ox - 0.02f * s, oy - 0.07f * s, "Ø 2,5 m", ink, size);
+            if (_height == null)
+            {
+                _height = Lang.Number(14.8, 1) + " m";
+                _diameter = "Ø " + Lang.Number(2.5, 1) + " m";
+            }
+            c.Label(ox + 0.27f * s, oy + 0.5f * s, _height, ink, size);
+            c.Label(ox - 0.02f * s, oy - 0.07f * s, _diameter, ink, size);
             float tx0 = w * 0.70f, tx1 = w * 0.93f, ty0 = h * 0.06f, ty1 = h * 0.17f;
             c.Label(tx0 + h * 0.01f, ty1 - h * 0.012f, c.Tr("#HD_BlueprintTitle"), ink, size * 1.15f);
             c.Label(tx0 + h * 0.01f, (ty0 + ty1) * 0.5f - h * 0.012f, c.Tr("#HD_BlueprintScale"), ink, size * 0.9f);

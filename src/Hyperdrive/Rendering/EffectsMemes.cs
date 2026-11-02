@@ -192,7 +192,7 @@ namespace Hyperdrive.Rendering
             if (alt != _shownAlt)
             {
                 _shownAlt = alt;
-                _alt = "ALT  " + alt + " m";
+                _alt = Lang.F("#HD_Alt", alt);
             }
             c.Label(c.W * 0.93f, c.H * 0.2f, _alt, new Color(1f, 1f, 1f, 0.8f), c.H * 0.026f, true);
         }

@@ -984,7 +984,7 @@ namespace Hyperdrive.Rendering
             if (percent != _percent)
             {
                 _percent = percent;
-                _percentText = percent + " %";
+                _percentText = Lang.F("#HD_Percent", percent);   // "34%" in English, "34 %" in French...
             }
             if (_tipsComponent != null && _tipsTextProperty != null)
             {

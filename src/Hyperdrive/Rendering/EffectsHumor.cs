@@ -229,7 +229,7 @@ namespace Hyperdrive.Rendering
             if (n != _shown)
             {
                 _shown = n;
-                _count = "STRUTS  " + n;
+                _count = Lang.F("#HD_Struts", n);
             }
             c.Label(c.W * 0.93f, c.H * 0.92f, _count, new Color(0.9f, 0.88f, 0.8f, 0.8f), c.H * 0.026f, true);   // top right: the load problems notice takes the top left
         }
@@ -617,7 +617,7 @@ namespace Hyperdrive.Rendering
             if (n != _shown)
             {
                 _shown = n;
-                _count = "BOOSTERS  " + n;
+                _count = Lang.F("#HD_Boosters", n);
             }
             c.Label(c.W * 0.93f, c.H * 0.92f, _count, new Color(0.92f, 0.9f, 0.85f, 0.8f), c.H * 0.026f, true);   // top right: the load problems notice takes the top left
         }

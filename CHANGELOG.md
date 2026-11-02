@@ -3,6 +3,11 @@
 Every version keeps the game identical to the base game, unless the player picks an option. Everything can be switched
 off subsystem by subsystem (KSP's settings, the Hyperdrive window, or `PluginData/Hyperdrive.user.cfg`).
 
+## 1.0.1
+- **Loading screens in every language**: the counters of the struts, boosters and altitude screens, the blueprint's
+  dimensions and the progress percentage now follow the game's language (they were in English or French for everyone).
+  English when the game's language is not one of KSP's.
+
 ## 1.0.0 (first public release)
 - **ModuleManager keeps its cache** even when a patch of the modpack has an error; otherwise it redoes all its patches at
   every start (744 s → 427 s on a 295-mod RSS/RP-1 modpack). The errors are still shown while loading, and comments in
