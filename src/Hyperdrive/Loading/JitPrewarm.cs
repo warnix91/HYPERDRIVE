@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
@@ -21,6 +22,10 @@ namespace Hyperdrive.Loading
     /// constructor would then run on this thread, and one that touches Unity crashes the game (seen with Astrogator's
     /// ViewTools creating a Texture2D). <see cref="CctorScan"/> reads each method's IL first and skips every method
     /// that could trigger a class constructor outside the .NET base library, so no mod code ever runs here.
+    /// Mono itself can still fall over on some mod's metadata (an access violation inside its reflection code, seen in a
+    /// 295-mod install): nothing can catch that, the game closes. So PluginData/JitPrewarm.txt names the assemblies being
+    /// compiled while the work runs; if the game dies, the next start reads them there and leaves them to run time for good.
+    /// An assembly whose types cannot all be loaded is left alone too.
     /// </summary>
     internal sealed class JitPrewarm : Subsystem
     {
@@ -36,6 +41,12 @@ namespace Hyperdrive.Loading
         private int _compiled, _skipped, _guarded, _failed, _assemblies, _workers = 1;
         private long _elapsedMs;
         private volatile bool _stop;
+
+        private const string GuardFileName = "JitPrewarm.txt";
+        private string _guardPath;
+        private readonly HashSet<string> _skip = new HashSet<string>(StringComparer.Ordinal);
+        private readonly object _guardLock = new object();
+        private volatile bool _quitting;   // a normal quit: the work in progress is not to blame
 
         public override string Name => "JitPrewarm";
 
@@ -77,6 +88,13 @@ namespace Hyperdrive.Loading
         private void Start()
         {
             _started = true;
+            ReadGuard();
+            Application.quitting += () =>
+            {
+                _quitting = true;
+                _stop = true;
+                WriteGuard(null, null);
+            };
             // Assembly list is read here on the main thread (KSP's AssemblyLoader is not thread-safe).
             var assemblies = new List<Assembly>();
             var seen = new HashSet<Assembly>();
@@ -86,6 +104,8 @@ namespace Hyperdrive.Loading
                 if (assembly == null || !seen.Add(assembly))
                     continue;
                 if (!_includeStock && ModAssemblies.IsStock(assembly))
+                    continue;
+                if (_skip.Contains(AssemblyName(assembly)))
                     continue;
                 assemblies.Add(assembly);
             }
@@ -106,21 +126,32 @@ namespace Hyperdrive.Loading
         {
             var watch = Stopwatch.StartNew();
             var types = new List<Type>();
+            var owners = new List<int>();   // index in names of each type's assembly
+            var names = new List<string>();
             int failed = 0;
             foreach (Assembly assembly in assemblies)
             {
                 if (_stop)
                     break;
-                try { types.AddRange(assembly.GetTypes()); }
-                catch (ReflectionTypeLoadException e) { types.AddRange(e.Types); }
-                catch (Exception) { failed++; }
+                Type[] found;
+                try { found = assembly.GetTypes(); }
+                catch (Exception) { failed++; continue; }   // types that cannot all load: leave the whole assembly alone
+                names.Add(AssemblyName(assembly));
+                types.AddRange(found);
+                for (int k = 0; k < found.Length; k++)
+                    owners.Add(names.Count - 1);
             }
             int workers = Math.Max(1, Math.Min(6, Environment.ProcessorCount - 2));
             var counts = new int[4];   // compiled, skipped, guarded, failed
             int next = -1;
             var threads = new List<Thread>();
+            var inFlight = new int[workers];   // assembly each worker is compiling, -1 when none
+            for (int w = 0; w < workers; w++)
+                inFlight[w] = -1;
+            int slots = -1;
             ThreadStart body = () =>
             {
+                int slot = Interlocked.Increment(ref slots);
                 var scan = new CctorScan();
                 int compiled = 0, skipped = 0, guarded = 0, failedHere = 0;
                 while (!_stop)
@@ -128,8 +159,14 @@ namespace Hyperdrive.Loading
                     int i = Interlocked.Increment(ref next);
                     if (i >= types.Count)
                         break;
+                    if (inFlight[slot] != owners[i])
+                    {
+                        inFlight[slot] = owners[i];
+                        WriteGuard(names, inFlight);
+                    }
                     CompileType(types[i], scan, ref compiled, ref skipped, ref guarded, ref failedHere);
                 }
+                inFlight[slot] = -1;
                 Interlocked.Add(ref counts[0], compiled);
                 Interlocked.Add(ref counts[1], skipped);
                 Interlocked.Add(ref counts[2], guarded);
@@ -144,6 +181,7 @@ namespace Hyperdrive.Loading
             body();
             foreach (Thread t in threads)
                 t.Join();
+            WriteGuard(names, null);
 
             _compiled = counts[0];
             _skipped = counts[1];
@@ -153,6 +191,75 @@ namespace Hyperdrive.Loading
             _workers = workers;
             _elapsedMs = watch.ElapsedMilliseconds;
             _done = true;
+        }
+
+        private static string AssemblyName(Assembly assembly)
+        {
+            try { return assembly.GetName().Name; }
+            catch (Exception) { return assembly.FullName ?? "?"; }
+        }
+
+        // Main thread, before the work: the assemblies of the guard file, and those that were being compiled when the
+        // previous session died, are skipped from now on.
+        private void ReadGuard()
+        {
+            var blamed = new List<string>();
+            try
+            {
+                _guardPath = Path.Combine(Path.Combine(HyperdriveRuntime.ModDirectory, "PluginData"), GuardFileName);
+                if (File.Exists(_guardPath))
+                {
+                    foreach (string raw in File.ReadAllLines(_guardPath))
+                    {
+                        string line = raw.Trim();
+                        if (line.StartsWith("skip ", StringComparison.Ordinal))
+                            _skip.Add(line.Substring(5).Trim());
+                        else if (line.StartsWith("running ", StringComparison.Ordinal) && _skip.Add(line.Substring(8).Trim()))
+                            blamed.Add(line.Substring(8).Trim());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warn("JitPrewarm: " + GuardFileName + " not read (" + e.Message + ")");
+            }
+            if (blamed.Count > 0)
+                Log.Warn("JitPrewarm: the game stopped while these assemblies were being compiled last time: " + string.Join(", ", blamed.ToArray())
+                         + "; they are left to run time from now on (PluginData/" + GuardFileName + ", delete it to try them again)");
+            else if (_skip.Count > 0)
+                Log.Info("JitPrewarm: " + _skip.Count + " assemblies left to run time after an earlier stop (PluginData/" + GuardFileName + ")");
+            WriteGuard(null, null);
+        }
+
+        // The skipped assemblies, then those being compiled now (null: none). Any thread; the file is closed after each
+        // write, so it survives the game dying an instant later.
+        private void WriteGuard(List<string> names, int[] inFlight)
+        {
+            if (_guardPath == null)
+                return;
+            lock (_guardLock)
+            {
+                try
+                {
+                    var text = new System.Text.StringBuilder();
+                    text.Append("// Hyperdrive JitPrewarm: assemblies left to run time because the game stopped while they were compiled.\n");
+                    text.Append("// \"running\" lines name the work in progress. Safe to delete.\n");
+                    foreach (string name in _skip)
+                        text.Append("skip ").Append(name).Append('\n');
+                    if (names != null && inFlight != null && !_quitting)
+                    {
+                        var listed = new HashSet<int>();
+                        foreach (int index in inFlight)
+                            if (index >= 0 && listed.Add(index))
+                                text.Append("running ").Append(names[index]).Append('\n');
+                    }
+                    File.WriteAllText(_guardPath, text.ToString());
+                }
+                catch (Exception)
+                {
+                    // a guard that cannot be written only loses its protection
+                }
+            }
         }
 
         private static void CompileType(Type type, CctorScan scan, ref int compiled, ref int skipped, ref int guarded, ref int failed)

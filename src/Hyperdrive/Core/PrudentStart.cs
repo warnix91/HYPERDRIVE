@@ -27,9 +27,9 @@ namespace Hyperdrive.Core
             { "FLIGHT", new[] { "HeapPadder", "BuoyancyGuard", "AeroIdleThrottle", "MassUpdateGuard", "ThermalCadence", "OcclusionCache", "ZeroForceGuard",
                                 "CrashFixes", "HighlightIdle", "HudText", "StockFixes", "LightBudget", "ThrottleGuard", "GCWindows", "LeakFixes" } },
             { "EDITOR", new[] { "HeapPadder", "PartListPerf", "IconPrewarm", "HighlightIdle", "GCWindows", "LeakFixes" } },
-            { "SPACECENTER", new[] { "HeapPadder", "StockFixes", "SavePrefetch", "GCWindows", "LeakFixes" } },
+            { "SPACECENTER", new[] { "HeapPadder", "StockFixes", "SavePrefetch", "GCWindows", "LeakFixes", "JitPrewarm" } },
             { "TRACKSTATION", new[] { "HeapPadder", "StockFixes", "GCWindows", "LeakFixes" } },
-            { "MAINMENU", new[] { "HeapPadder", "SavePrefetch", "GCWindows" } },
+            { "MAINMENU", new[] { "HeapPadder", "SavePrefetch", "GCWindows", "JitPrewarm" } },   // JitPrewarm works in the background from the menu on
         };
 
         private static string s_path;

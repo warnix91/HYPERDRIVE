@@ -4,6 +4,12 @@ Every version keeps the game identical to the base game, unless the player picks
 off subsystem by subsystem (KSP's settings, the Hyperdrive window, or `PluginData/Hyperdrive.user.cfg`).
 
 ## 1.0.1
+- **Crash fix (JitPrewarm)**: on some large modpacks, Mono itself could crash while Hyperdrive compiled mods' code
+  ahead of time in the background, a few seconds after the main menu. Hyperdrive now remembers which assemblies were
+  being compiled (`PluginData/JitPrewarm.txt`): if the game stops there, the next starts leave them alone, and the next
+  start after any abrupt stop at the main menu skips this work once. Assemblies whose types cannot all load are skipped.
+- **Two settings for the loading animations**: the startup animation and the scene change animations can now be
+  switched on and off separately (KSP's settings and the Hyperdrive window), e.g. to keep one with a quick start mod.
 - **Loading screens in every language**: the counters of the struts, boosters and altitude screens, the blueprint's
   dimensions and the progress percentage now follow the game's language (they were in English or French for everyone).
   English when the game's language is not one of KSP's.

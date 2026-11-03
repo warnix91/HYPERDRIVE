@@ -62,12 +62,9 @@ namespace Hyperdrive.UI
         {
             UiPage p = Page(m, Lang.T("#HD_P_General"), UiGlyph.General);
             Section(p, Lang.T("#HD_P_SecLoading"));
-            Toggle(p, Lang.T("#HD_Set_Animations"), Lang.T("#HD_P_AnimHint"), () => UserConfig.Subsystem("WarpScreen", true), v =>
-            {
-                UserConfig.SetSubsystem("WarpScreen", v);
-                UserConfig.SetSubsystem("SceneLoadScreen", v);
-            });
+            Toggle(p, Lang.T("#HD_Set_Animations"), Lang.T("#HD_P_AnimHint"), () => UserConfig.Subsystem("WarpScreen", true), v => UserConfig.SetSubsystem("WarpScreen", v));
             Toggle(p, Lang.T("#HD_Set_Intro"), Lang.T("#HD_P_IntroHint"), () => UserConfig.Bool("WarpScreen", "intro", true), v => UserConfig.SetBool("WarpScreen", "intro", v));
+            Toggle(p, Lang.T("#HD_Set_SceneAnim"), Lang.T("#HD_P_SceneAnimHint"), () => UserConfig.Subsystem("SceneLoadScreen", true), v => UserConfig.SetSubsystem("SceneLoadScreen", v));
             Toggle(p, Lang.T("#HD_Set_Notice"), Lang.T("#HD_P_NoticeHint"), () => UserConfig.Bool("LoadProblems", "showOnLoadingScreen", true),
                    v => UserConfig.SetBool("LoadProblems", "showOnLoadingScreen", v));
             Toggle(p, Lang.T("#HD_Set_PngCache"), Lang.T("#HD_P_PngCacheHint"), () => UserConfig.Bool("FastLoader", "pngCache", true),

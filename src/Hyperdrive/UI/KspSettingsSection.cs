@@ -29,7 +29,8 @@ namespace Hyperdrive.UI
         {
             if (s_items.Count > 0)
                 return;
-            s_items.Add(new Item { Label = "#HD_Set_Animations", Section = "SUBSYSTEMS", Key = "WarpScreen", Also = new[] { "SceneLoadScreen" }, Default = true });
+            s_items.Add(new Item { Label = "#HD_Set_Animations", Section = "SUBSYSTEMS", Key = "WarpScreen", Default = true });
+            s_items.Add(new Item { Label = "#HD_Set_SceneAnim", Section = "SUBSYSTEMS", Key = "SceneLoadScreen", Default = true });
             s_items.Add(new Item { Label = "#HD_Set_Intro", Section = "WarpScreen", Key = "intro", Default = true });
             s_items.Add(new Item { Label = "#HD_Set_Notice", Section = "LoadProblems", Key = "showOnLoadingScreen", Default = true });
             s_items.Add(new Item { Label = "#HD_Set_PngCache", Section = "FastLoader", Key = "pngCache", Default = true });
